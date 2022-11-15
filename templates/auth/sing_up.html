@@ -1,0 +1,59 @@
+{% extends './base.html' %}
+{% block title %}Sing Up{% endblock %}  
+
+{% block customCSS %} 
+<link rel="stylesheet" href="{{ url_for('static', filename= 'css/login.css') }}">
+{% endblock %}
+
+
+{% block body %}
+<form class="form-signin" action="/sing_up" method="POST">
+    <a href="/login"><img class="mb-4" src="https://cdn-icons-png.flaticon.com/512/1974/1974054.png" alt="" width="72" height="57" ></a>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <br />
+    {% for message in messages %}
+    <div class="alert alert-primary alert-dismissible" role="alert">
+        <strong>{{ message }}</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+    
+    <h1 class="h3 mb-3 fw-normal">Sing Up</h1>
+    <div class="form-floating">
+      <input type="text" class="form-control" name="username" >
+      <label >username</label>
+    </div>
+    <br>
+
+    <div class="form-floating">
+      <input type="text" class="form-control" name="surname" >
+      <label >surname</label>
+    </div>
+    <br>
+
+    <div class="form-floating">
+      <input type="password" class="form-control" name="password" >
+      <label >password</label>
+    </div>
+
+    <div class="form-floating">
+        <input type="email" class="form-control" name="email" >
+        <label>email</label>
+    </div>
+    <br>
+
+    <div class="form-floating">
+        <input type="tel" class="form-control" name="phone">
+        <label >phone</label>
+    </div>
+    <br>
+  
+    <button class="w-100 btn btn-lg btn-primary" type="submit">Sign up</button>
+    <br>
+    <a href="/login">return</a>
+  </form>
+
+{% endblock %}
