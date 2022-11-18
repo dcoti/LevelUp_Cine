@@ -1,5 +1,5 @@
 {% extends './base.html' %}
-{% block title %}Sing Up{% endblock %}  
+{% block title %}Upload Movie{% endblock %}  
 
 {% block customCSS %} 
 <link rel="stylesheet" href="{{ url_for('static', filename= 'csss/login.css') }}">
@@ -7,7 +7,7 @@
 
 
 {% block body %}
-<form class="form-signin" action="/sing_up" method="POST">
+<form class="form-signin" action="/upload_movie" method="POST">
     <a href="/login"><img class="mb-4" src="https://cdn-icons-png.flaticon.com/512/1974/1974054.png" alt="" width="72" height="57" ></a>
     {% with messages = get_flashed_messages() %}
     {% if messages %}
@@ -21,37 +21,25 @@
     {% endif %}
     {% endwith %}
     
-    <h1 class="h3 mb-3 fw-normal">Sing Up</h1>
+    <h1 class="h3 mb-3 fw-normal">Upload Movie</h1>
     <div class="form-floating">
-      <input type="text" class="form-control" name="username" required>
-      <label >username</label>
+      <input type="text" class="form-control" name="title" required>
+      <label >Title</label>
     </div>
     <br>
 
     <div class="form-floating">
-      <input type="text" class="form-control" name="surname" required>
-      <label >surname</label>
+      <input type="text" class="form-control" name="img" required>
+      <label >img</label>
     </div>
     <br>
 
     <div class="form-floating">
-      <input type="password" class="form-control" name="password" required>
-      <label >password</label>
+      <input type="text" class="form-control" name="classification" required>
+      <label >Classification</label>
     </div>
-
-    <div class="form-floating">
-        <input type="email" class="form-control" name="email" required>
-        <label>email</label>
-    </div>
-    <br>
-
-    <div class="form-floating">
-        <input type="tel" class="form-control" name="phone" required>
-        <label >phone</label>
-    </div>
-    <br>
-  
-    <button class="w-100 btn btn-lg btn-primary" type="submit">Sign up</button>
+    <br>  
+    <button class="w-100 btn btn-lg btn-primary" type="submit">Add</button>
     <br>
     <a href="/login">return</a>
   </form>
