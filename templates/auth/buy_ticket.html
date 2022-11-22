@@ -1,0 +1,54 @@
+{% extends './base.html' %}
+{% block title %}Tickets{% endblock %}  
+
+{% block customCSS %} 
+<link rel="stylesheet" href="{{ url_for('static', filename= 'csss/login.css') }}">
+{% endblock %}
+
+
+{% block body %}
+<form class="form-signin" action="/buy_ticket/{{ movie.id_movie }}" method="POST">
+  <header class="w3-display-container w3-content w3-center" style="max-width:1500px">
+    <img class="w3-image" src="{{ movie.img }}" alt="Norway" style="width:100%" class="w3-hover-opacity">
+    <div class="w3-display-middle w3-padding-large w3-border w3-wide w3-text-light-grey w3-center">
+      <h1 class="w3-hide-medium w3-hide-small w3-xxxlarge">{{movie.title}}</h1>
+      <h3 class="w3-hide-medium w3-hide-small">FUNCTIONS</h3>
+      <br>
+    </div>
+  </header>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <br />
+    {% for message in messages %}
+    <div class="alert alert-primary alert-dismissible" role="alert">
+        <strong>{{ message }}</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+    <label for="floatingInput">SELECT FUNCTION</label>
+    <br><br>
+    <div class="form-floating">
+      <select name="function" id="function">
+        <option value="1">1</option>
+        <option value="2">2</option>
+      </select>
+    </div>
+    <br>
+    <div class="form-floating">
+      <input type="text" class="form-control" name="seat" placeholder="seat" required>
+      <label for="floatingPassword">Seat: A1,B2,E5...</label>
+    </div>
+    <br>
+    <button class="w-100 btn btn-lg btn-primary" type="submit">To Buy</button>
+    <br>
+    <br>
+    {% if us==None %}
+    <a href="/login">Login</a>
+    {% endif %}
+    {% if us!=None %}
+    <a href="/home">Home</a>
+    {% endif %}
+  </form>
+{% endblock %}

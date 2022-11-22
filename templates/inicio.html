@@ -14,7 +14,9 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", sans-serif}
 </head>
 <body class="w3-light-grey w3-content" style="max-width:1600px">
 
-<!-- Sidebar/menu -->
+  
+  
+{% if us !=None %}
 <nav class="w3-sidebar w3-collapse w3-white w3-animate-left" style="z-index:3;width:300px;" id="mySidebar"><br>
   <div class="w3-container">
     <a href="https://www.w3schools.com/w3css/tryw3css_templates_portfolio.htm#" onclick="w3_close()" class="w3-hide-large w3-right w3-jumbo w3-padding w3-hover-grey" title="close menu">
@@ -25,20 +27,18 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", sans-serif}
     <p class="w3-text-grey">{{ em }}</p>
   </div>
   <div class="w3-bar-block">
-    <a href="https://www.w3schools.com/w3css/tryw3css_templates_portfolio.htm#portfolio" onclick="w3_close()" class="w3-bar-item w3-button w3-padding w3-text-teal">Buy tickets</a> 
     <a href="https://www.w3schools.com/w3css/tryw3css_templates_portfolio.htm#about" onclick="w3_close()" class="w3-bar-item w3-button w3-padding">Cancel tickets</a> 
     <a href="/logout"  class="w3-bar-item w3-button w3-padding"></i>Sign out</a>
   </div>
 </nav>
+{% endif %}
 
-<!-- Overlay effect when opening sidebar on small screens -->
-<div class="w3-overlay w3-hide-large w3-animate-opacity" onclick="w3_close()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
 
 <!-- !PAGE CONTENT! -->
 <div class="w3-main" style="margin-left:300px">
   {% for movie in movies %}
   <div class="w3-third w3-container">
-    <img src="{{movie.img}}" alt="Norway" style="width:100%" class="w3-hover-opacity">
+   <a href="buy_ticket/{{ movie.id_movie }}"><img src="{{movie.img}}" alt="Norway" style="width:100%" class="w3-hover-opacity"></a> 
     <div class="w3-container w3-white">
       <p><b>{{movie.title}}</b></p>
       <p>Classification: {{movie.classification}}</p>
@@ -46,6 +46,7 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", sans-serif}
   </div>
   {% endfor %}
 </div>
+
 <!-- End page content -->
 
 </body></html>

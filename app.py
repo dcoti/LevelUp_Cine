@@ -10,6 +10,7 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"]=False
 
 db = SQLAlchemy(app)
 user_=None
+seats=["A1","A2","A3","A4","A5","A6","A7","A8","A9","A10","B1","B2","B3","B4","B5","B6","B7","B8","B9","B10","C1","C2","C3","C4","C5","C6","C7","C8","C9","C10","D1","D2","D3","D4","D5","D6","D7","D8","D9","D10","E1","E2","E3","E4","E5","E6","E7","E8","E9","E10"]
 
 class User(db.Model):
     __tablename__ = 'users'
@@ -69,11 +70,16 @@ def login():
 
 @app.route('/home', methods=['GET'])
 def home():
-    user= db.session.query(User).filter(User.email==user_).first()
-    us=user.username;
-    em=user.email;
     movies=Movie.query.all()
-    return render_template('/inicio.html',us=us,em=em,movies=movies)
+    if 'user_session' in session:
+        user= db.session.query(User).filter(User.email==user_).first()
+        us=user.username;
+        em=user.email;
+        return render_template('/inicio.html',us=us,em=em,movies=movies,user_=user_)
+    else:
+        us=None
+        return render_template('/inicio.html',movies=movies,us=us)
+
 
 
 
@@ -113,7 +119,24 @@ def logout():
     global user_
     user_= None
     return redirect('/login')
-    
+
+@app.route('/buy_ticket/<movies>', methods=['GET', 'POST'])
+def buy_tickets(movies):
+    movie= db.session.query(Movie).filter(Movie.id_movie==movies).first()
+    function=Function.query.all()
+    if request.method == 'GET':
+        if 'user_session' in session:
+            return render_template('auth/buy_ticket.html',movie=movie,function=function,us=True,seats=seats)  
+        else:
+            return render_template('auth/buy_ticket.html',movie=movie,function=function,us=None,seats=seats)  
+    else:
+        if 'user_session' in session:
+            flash('felicidades')
+            return render_template('auth/buy_ticket.html',movie=movie,function=function,us=True,seats=seats)  
+        else:
+            flash("You must log in")
+            return render_template('auth/buy_ticket.html',movie=movie,function=function,us=None,seats=seats) 
+
 
 
 if __name__ == '__main__':
