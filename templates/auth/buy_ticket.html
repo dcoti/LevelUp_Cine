@@ -33,7 +33,7 @@
       <select name="function" id="function">
         {% for function in functions %}
           {% if movie.id_movie == function.id_movie %}
-            <option value="{{ function.id_function }}">{{ function.datefuncion }}</option>
+            <option value="{{ function.id_function,function.id_movie }}">{{ function.datefuncion }}</option>
           {% endif %}
         {% endfor %}
       </select>

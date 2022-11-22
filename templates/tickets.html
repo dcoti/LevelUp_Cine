@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!-- saved from url=(0064)https://www.w3schools.com/w3css/tryw3css_templates_portfolio.htm -->
 <html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Home</title>
+<title>Tickets</title>
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="/static/w3.css">
@@ -41,7 +41,12 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", sans-serif}
     {% if tics.user == user_ %}
     <div class="w3-third w3-container">
        <div class="w3-container w3-white">
-         <p><b>{{tics.id_function}}</b></p>
+         {% for movies in movie %}
+            {% if movies.id_movie==tics.id_movie %}
+            <p><b>{{movies.title}}</b></p>
+            {% endif %}
+          {% endfor %}
+         <p>{{tics.id_function}}</p>
          <p>Seats {{tics.seat}}</p>
          <a href="/delate/{{ tics.id_ticket }}" class="btn btn-success btn-sm">Cancel</a>
        </div>

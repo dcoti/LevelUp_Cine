@@ -45,6 +45,7 @@ class Ticket(db.Model):
     seat= db.Column(db.String(256))
     id_function = db.Column(db.Integer, db.ForeignKey('functions.id_function'))  
     user=db.Column(db.String(256))
+    id_movie= db.Column(db.Integer)
     created_at = db.Column(db.DateTime(), default=datetime.now()) 
 
 @app.route('/')
@@ -157,14 +158,19 @@ def buy_tickets(movies):
             return render_template('auth/buy_ticket.html',movie=movie,functions=functions,us=None)  
     else:
         if 'user_session' in session:
-            fun=request.form['function']
+            fun=request.form['function'].split(',')
+            mov=str(fun[0]).replace('(','').strip()
+            mov1=str(fun[1]).replace(')','').strip()
             se=request.form['seat'].split(",")
             prueba=""
+            aux2=Ticket.query.all()
             aux=False
             for i in se:
-                aux=db.session.query(Ticket).filter(Ticket.seat==str(i)).first()
-                if aux!=None:
-                    prueba+=str(i)+" "
+                for j in aux2:
+                    if j !=None:
+                        if str(mov1) == str(j.id_movie):
+                            if str(i) == str(j.seat):
+                                prueba+=str(i)+" "
             for i in se:
                 for j in val:
                     if i == j:
@@ -178,8 +184,8 @@ def buy_tickets(movies):
             if aux!=False:
                 if prueba=="":
                     for i in se: 
-                        f=db.session.query(Function).filter(Function.id_function==str(fun)).first()
-                        tic=Ticket(seat=str(i),id_function=f.datefuncion,user=session['user_session'])
+                        f=db.session.query(Function).filter(Function.id_function==str(mov)).first()
+                        tic=Ticket(seat=str(i),id_function=f.datefuncion,user=session['user_session'],id_movie=movies)
                         db.session.add(tic)
                         db.session.commit()
                     flash("Ok")
@@ -193,7 +199,8 @@ def buy_tickets(movies):
 @app.route('/tickets', methods=['GET'])
 def tickets():
     tic=Ticket.query.all()
-    return render_template('/tickets.html',tic=tic,user_=user_)
+    movie=Movie.query.all()
+    return render_template('/tickets.html',tic=tic,user_=user_,movie=movie)
 
 
 @app.route('/delate/<id_ticket>',methods=['GET'])
@@ -201,7 +208,7 @@ def delate(id_ticket):
     db.session.query(Ticket).filter(Ticket.id_ticket==id_ticket).delete()
     db.session.commit()
     return redirect(url_for('tickets'))
-    
+
 
 if __name__ == '__main__':
     app.run(debug=True)
