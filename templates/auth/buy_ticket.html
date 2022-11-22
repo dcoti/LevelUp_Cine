@@ -31,8 +31,9 @@
     <br><br>
     <div class="form-floating">
       <select name="function" id="function">
-        <option value="1">1</option>
-        <option value="2">2</option>
+        {% for function in functions %}
+        <option value="{{ function.id_function }}">{{ function.datefuncion }}</option>
+        {% endfor %}
       </select>
     </div>
     <br>

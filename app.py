@@ -10,7 +10,7 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"]=False
 
 db = SQLAlchemy(app)
 user_=None
-seats=["A1","A2","A3","A4","A5","A6","A7","A8","A9","A10","B1","B2","B3","B4","B5","B6","B7","B8","B9","B10","C1","C2","C3","C4","C5","C6","C7","C8","C9","C10","D1","D2","D3","D4","D5","D6","D7","D8","D9","D10","E1","E2","E3","E4","E5","E6","E7","E8","E9","E10"]
+seats=("A1,A2,A3,A4,A5,A6,A7,A8,A9,A10,B1,B2,B3,B4,B5,B6,B7,B8,B9,B10,C1,C2,C3,C4,C5,C6,C7,C8,C9,C10,D1,D2,D3,D4,D5,D6,D7,D8,D9,D10,E1,E2,E3,E4,E5,E6,E7,E8,E9,E10")
 
 class User(db.Model):
     __tablename__ = 'users'
@@ -33,7 +33,7 @@ class Function(db.Model):
     __tablename__ = 'functions'
     id_function= db.Column(db.Integer, primary_key=True, autoincrement=True)
     seat = db.Column(db.String(256))
-    datefuncion = db.Column(db.DateTime())
+    datefuncion = db.Column(db.String(256))
     id_movie = db.Column(db.Integer, db.ForeignKey('movies.id_movie'))
     created_at = db.Column(db.DateTime(), default=datetime.now()) 
 
@@ -113,6 +113,30 @@ def upload_upload():
     else:
         return render_template('auth/upload_movie.html')
 
+@app.route('/functions_movie', methods=['GET','POST'])
+def functions_movie():
+    if request.method== 'POST':
+        movie=Function(seat=seats, datefuncion=request.form['DateFunction'],id_movie=request.form['id_movie'])
+        val=request.form['id_movie']
+        date=db.session.query(Function).filter(Function.datefuncion==movie.datefuncion).first()
+        if date==None:
+            db.session.add(movie)
+            db.session.commit()
+            flash("Function added")      
+        else:
+            if str(date.id_movie) == val:
+                flash("Function already exists")
+            else:
+                print("entra aqui")
+                print(val)
+                print(date.id_movie)
+                db.session.add(movie)
+                db.session.commit()
+                flash("Function added")       
+        return render_template('auth/functions.html')
+    else:
+        return render_template('auth/functions.html')
+
 @app.route('/logout', methods=['GET'])
 def logout():
     session.pop('user_session', None)
@@ -123,19 +147,19 @@ def logout():
 @app.route('/buy_ticket/<movies>', methods=['GET', 'POST'])
 def buy_tickets(movies):
     movie= db.session.query(Movie).filter(Movie.id_movie==movies).first()
-    function=Function.query.all()
+    functions=Function.query.all()
     if request.method == 'GET':
         if 'user_session' in session:
-            return render_template('auth/buy_ticket.html',movie=movie,function=function,us=True,seats=seats)  
+            return render_template('auth/buy_ticket.html',movie=movie,functions=functions,us=True)  
         else:
-            return render_template('auth/buy_ticket.html',movie=movie,function=function,us=None,seats=seats)  
+            return render_template('auth/buy_ticket.html',movie=movie,functions=functions,us=None)  
     else:
         if 'user_session' in session:
             flash('felicidades')
-            return render_template('auth/buy_ticket.html',movie=movie,function=function,us=True,seats=seats)  
+            return render_template('auth/buy_ticket.html',movie=movie,functions=functions,us=True)  
         else:
             flash("You must log in")
-            return render_template('auth/buy_ticket.html',movie=movie,function=function,us=None,seats=seats) 
+            return render_template('auth/buy_ticket.html',movie=movie,functions=functions,us=None) 
 
 
 
