@@ -10,7 +10,9 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"]=False
 
 db = SQLAlchemy(app)
 user_=None
+name=None
 seats=("A1,A2,A3,A4,A5,A6,A7,A8,A9,A10,B1,B2,B3,B4,B5,B6,B7,B8,B9,B10,C1,C2,C3,C4,C5,C6,C7,C8,C9,C10,D1,D2,D3,D4,D5,D6,D7,D8,D9,D10,E1,E2,E3,E4,E5,E6,E7,E8,E9,E10")
+val=["A1","A2","A3","A4","A5","A6","A7","A8","A9","A10","B1","B2","B3","B4","B5","B6","B7","B8","B9","B10","C1","C2","C3","C4","C5","C6","C7","C8","C9","C10","D1","D2","D3","D4","D5","D6","D7","D8","D9","D10","E1","E2","E3","E4","E5","E6","E7","E8","E9","E10"]
 
 class User(db.Model):
     __tablename__ = 'users'
@@ -42,6 +44,7 @@ class Ticket(db.Model):
     id_ticket= db.Column(db.Integer, primary_key = True)
     seat= db.Column(db.String(256))
     id_function = db.Column(db.Integer, db.ForeignKey('functions.id_function'))  
+    user=db.Column(db.String(256))
     created_at = db.Column(db.DateTime(), default=datetime.now()) 
 
 @app.route('/')
@@ -74,14 +77,13 @@ def home():
     if 'user_session' in session:
         user= db.session.query(User).filter(User.email==user_).first()
         us=user.username;
+        global name
+        name=us
         em=user.email;
         return render_template('/inicio.html',us=us,em=em,movies=movies,user_=user_)
     else:
         us=None
         return render_template('/inicio.html',movies=movies,us=us)
-
-
-
 
 @app.route('/sing_up', methods=['GET','POST'])
 def sing_up():
@@ -155,13 +157,51 @@ def buy_tickets(movies):
             return render_template('auth/buy_ticket.html',movie=movie,functions=functions,us=None)  
     else:
         if 'user_session' in session:
-            flash('felicidades')
+            fun=request.form['function']
+            se=request.form['seat'].split(",")
+            prueba=""
+            aux=False
+            for i in se:
+                aux=db.session.query(Ticket).filter(Ticket.seat==str(i)).first()
+                if aux!=None:
+                    prueba+=str(i)+" "
+            for i in se:
+                for j in val:
+                    if i == j:
+                        aux=True
+                        break
+                    else:
+                        aux=False
+                if aux==False:
+                    flash("out of range")
+                    break
+            if aux!=False:
+                if prueba=="":
+                    for i in se: 
+                        f=db.session.query(Function).filter(Function.id_function==str(fun)).first()
+                        tic=Ticket(seat=str(i),id_function=f.datefuncion,user=session['user_session'])
+                        db.session.add(tic)
+                        db.session.commit()
+                    flash("Ok")
+                else:
+                    flash("Seats "+prueba+" occupied")
             return render_template('auth/buy_ticket.html',movie=movie,functions=functions,us=True)  
         else:
             flash("You must log in")
             return render_template('auth/buy_ticket.html',movie=movie,functions=functions,us=None) 
 
+@app.route('/tickets', methods=['GET'])
+def tickets():
+    tic=Ticket.query.all()
+    return render_template('/tickets.html',tic=tic,user_=user_)
 
+
+@app.route('/delate/<id_ticket>',methods=['GET'])
+def delate(id_ticket):
+    db.session.query(Ticket).filter(Ticket.id_ticket==id_ticket).delete()
+    db.session.commit()
+    return redirect(url_for('tickets'))
+    
 
 if __name__ == '__main__':
     app.run(debug=True)

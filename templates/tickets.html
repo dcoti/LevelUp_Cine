@@ -23,11 +23,12 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", sans-serif}
       <i class="fa fa-remove"></i>
     </a>
     <img src="https://i.pinimg.com/736x/5e/09/0c/5e090c20686499a2078d97af3cb070c6.jpg" style="width:45%;" class="w3-round"><br><br>
-    <h4><b>{{ us }}</b></h4>
-    <p class="w3-text-grey">{{ em }}</p>
+    <p class="w3-text-grey">{{ user_ }}</p>
   </div>
   <div class="w3-bar-block">
-    <a href="/tickets" onclick="w3_close()" class="w3-bar-item w3-button w3-padding">Cancel tickets</a> 
+    <a href="/home"  class="w3-bar-item w3-button w3-padding"></i>Home</a>
+    <a href="https://www.w3schools.com/w3css/tryw3css_templates_portfolio.htm#about" onclick="w3_close()" class="w3-bar-item w3-button w3-padding">Cancel tickets</a> 
+    
     <a href="/logout"  class="w3-bar-item w3-button w3-padding"></i>Sign out</a>
   </div>
 </nav>
@@ -36,15 +37,18 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", sans-serif}
 
 <!-- !PAGE CONTENT! -->
 <div class="w3-main" style="margin-left:300px">
-  {% for movie in movies %}
-  <div class="w3-third w3-container">
-   <a href="buy_ticket/{{ movie.id_movie }}"><img src="{{movie.img}}" alt="Norway" style="width:100%" class="w3-hover-opacity"></a> 
-    <div class="w3-container w3-white">
-      <p><b>{{movie.title}}</b></p>
-      <p>Classification: {{movie.classification}}</p>
-    </div>
-  </div>
-  {% endfor %}
+  {% for tics in tic %}
+    {% if tics.user == user_ %}
+    <div class="w3-third w3-container">
+       <div class="w3-container w3-white">
+         <p><b>{{tics.id_function}}</b></p>
+         <p>Seats {{tics.seat}}</p>
+         <a href="/delate/{{ tics.id_ticket }}" class="btn btn-success btn-sm">Cancel</a>
+       </div>
+     </div>
+    {% endif %}
+    <br>
+  {% endfor %}    
 </div>
 
 <!-- End page content -->

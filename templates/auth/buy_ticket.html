@@ -32,11 +32,14 @@
     <div class="form-floating">
       <select name="function" id="function">
         {% for function in functions %}
-        <option value="{{ function.id_function }}">{{ function.datefuncion }}</option>
+          {% if movie.id_movie == function.id_movie %}
+            <option value="{{ function.id_function }}">{{ function.datefuncion }}</option>
+          {% endif %}
         {% endfor %}
       </select>
     </div>
     <br>
+    <label for="floatingInput">A1...E10</label>
     <div class="form-floating">
       <input type="text" class="form-control" name="seat" placeholder="seat" required>
       <label for="floatingPassword">Seat: A1,B2,E5...</label>
