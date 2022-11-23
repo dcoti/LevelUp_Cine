@@ -159,8 +159,11 @@ def buy_tickets(movies):
     else:
         if 'user_session' in session:
             fun=request.form['function'].split(',')
+            print(fun)
             mov=str(fun[0]).replace('(','').strip()
             mov1=str(fun[1]).replace(')','').strip()
+            mov2=str(fun[2]).replace(')','')
+            mov2=mov2.replace("'","").strip()
             se=request.form['seat'].split(",")
             prueba=""
             aux2=Ticket.query.all()
@@ -170,7 +173,8 @@ def buy_tickets(movies):
                     if j !=None:
                         if str(mov1) == str(j.id_movie):
                             if str(i) == str(j.seat):
-                                prueba+=str(i)+" "
+                                if str(mov2)==str(j.id_function):
+                                    prueba+=str(i)+" "
             for i in se:
                 for j in val:
                     if i == j:
