@@ -81,6 +81,7 @@ def home():
         global name
         name=us
         em=user.email;
+        flash("Welcome")
         return render_template('/inicio.html',us=us,em=em,movies=movies,user_=user_)
     else:
         us=None
@@ -260,6 +261,24 @@ def delate(id_ticket):
         db.session.commit()
         flash("Ok")
     return redirect(url_for('tickets'))
+
+@app.errorhandler(404)
+def not_found(error):
+    flash("Error 404")
+    return error, 404
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
