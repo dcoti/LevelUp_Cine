@@ -35,8 +35,8 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", sans-serif}
 
 
 <!-- !PAGE CONTENT! -->
+{% for movie in movies %}
 <div class="w3-main" style="margin-left:300px">
-  {% for movie in movies %}
   <div class="w3-third w3-container">
    <a href="buy_ticket/{{ movie.id_movie }}"><img src="{{movie.img}}" alt="Norway" style="width:100%" class="w3-hover-opacity"></a> 
     <div class="w3-container w3-white">
@@ -44,8 +44,8 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", sans-serif}
       <p>Classification: {{movie.classification}}</p>
     </div>
   </div>
-  {% endfor %}
 </div>
+{% endfor %}
 
 <!-- End page content -->
 

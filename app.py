@@ -133,9 +133,6 @@ def functions_movie():
             if str(date.id_movie) == val:
                 flash("Function already exists")
             else:
-                print("entra aqui")
-                print(val)
-                print(date.id_movie)
                 db.session.add(movie)
                 db.session.commit()
                 flash("Function added")       
@@ -164,14 +161,11 @@ def buy_tickets(movies):
             fun=request.form['function'].split(',')
             #id_function
             mov=str(fun[0]).replace('(','').strip()
-            print(mov)
             #id_movie
             mov1=str(fun[1]).replace(')','').strip()
-            print(mov1)
             #datefuncion
             mov2=str(fun[2]).replace(')','')
             mov2=mov2.replace("'","").strip()
-            print(mov2)
             #Seats add
             se=str(request.form['seat']).upper()
             se_=se
@@ -238,8 +232,6 @@ def tickets():
 
 @app.route('/delate/<id_ticket>',methods=['GET'])
 def delate(id_ticket):
-    tic=Ticket.query.all()
-    movie=Movie.query.all()
     #2022-11-23 22:10
     actual=str(datetime.now())[:-10]
     actual=actual.split(' ')

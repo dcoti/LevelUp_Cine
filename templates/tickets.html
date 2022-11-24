@@ -8,9 +8,12 @@
 <link rel="stylesheet" href="/static/css">
 <link rel="stylesheet" href="/static/font-awesome.min.css">
 <link rel="shortcut icon" href="https://cdn-icons-png.flaticon.com/512/1974/1974054.png" />
+
 <style>
 body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", sans-serif}
 </style>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+
 </head>
 <body class="w3-light-grey w3-content" style="max-width:1600px">
 
@@ -45,25 +48,27 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", sans-serif}
 
 
 <!-- !PAGE CONTENT! -->
+{% for tics in tic %}
 <div class="w3-main" style="margin-left:300px">
-  {% for tics in tic %}
     {% if tics.user == user_ %}
     <div class="w3-third w3-container">
        <div class="w3-container w3-white">
          {% for movies in movie %}
             {% if movies.id_movie==tics.id_movie %}
+            <a ><img src="{{movies.img}}" alt="Norway" style="width:100%" class="w3-hover-opacity"></a> 
             <p><b>{{movies.title}}</b></p>
             {% endif %}
           {% endfor %}
-         <p>{{tics.datefunctions}}</p>
-         <p>Seats {{tics.seat}}</p>
+         <p><b>Date: </b>{{tics.datefunctions}}</p>
+         <p><b>Seats: </b> {{tics.seat}}</p>
          <a href="/delate/{{ tics.id_ticket }}" class="btn btn-success btn-sm">Cancel</a>
+         <br>
+         <br>
        </div>
      </div>
     {% endif %}
-    <br>
-  {% endfor %}    
 </div>
+{% endfor %}  
 
 
 
