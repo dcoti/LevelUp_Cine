@@ -27,8 +27,6 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", sans-serif}
   </div>
   <div class="w3-bar-block">
     <a href="/home"  class="w3-bar-item w3-button w3-padding"></i>Home</a>
-    <a href="https://www.w3schools.com/w3css/tryw3css_templates_portfolio.htm#about" onclick="w3_close()" class="w3-bar-item w3-button w3-padding">Cancel tickets</a> 
-    
     <a href="/logout"  class="w3-bar-item w3-button w3-padding"></i>Sign out</a>
   </div>
 </nav>
@@ -46,7 +44,7 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", sans-serif}
             <p><b>{{movies.title}}</b></p>
             {% endif %}
           {% endfor %}
-         <p>{{tics.id_function}}</p>
+         <p>{{tics.datefunctions}}</p>
          <p>Seats {{tics.seat}}</p>
          <a href="/delate/{{ tics.id_ticket }}" class="btn btn-success btn-sm">Cancel</a>
        </div>

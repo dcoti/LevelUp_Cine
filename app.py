@@ -11,8 +11,8 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"]=False
 db = SQLAlchemy(app)
 user_=None
 name=None
-seats=("A1,A2,A3,A4,A5,A6,A7,A8,A9,A10,B1,B2,B3,B4,B5,B6,B7,B8,B9,B10,C1,C2,C3,C4,C5,C6,C7,C8,C9,C10,D1,D2,D3,D4,D5,D6,D7,D8,D9,D10,E1,E2,E3,E4,E5,E6,E7,E8,E9,E10")
-val=["A1","A2","A3","A4","A5","A6","A7","A8","A9","A10","B1","B2","B3","B4","B5","B6","B7","B8","B9","B10","C1","C2","C3","C4","C5","C6","C7","C8","C9","C10","D1","D2","D3","D4","D5","D6","D7","D8","D9","D10","E1","E2","E3","E4","E5","E6","E7","E8","E9","E10"]
+seats="A1,A2,A3,A4,A5,A6,A7,A8,A9,A10,B1,B2,B3,B4,B5,B6,B7,B8,B9,B10,C1,C2,C3,C4,C5,C6,C7,C8,C9,C10,D1,D2,D3,D4,D5,D6,D7,D8,D9,D10,E1,E2,E3,E4,E5,E6,E7,E8,E9,E10"
+ran=["A1","A2","A3","A4","A5","A6","A7","A8","A9","A10","B1","B2","B3","B4","B5","B6","B7","B8","B9","B10","C1","C2","C3","C4","C5","C6","C7","C8","C9","C10","D1","D2","D3","D4","D5","D6","D7","D8","D9","D10","E1","E2","E3","E4","E5","E6","E7","E8","E9","E10"]
 
 class User(db.Model):
     __tablename__ = 'users'
@@ -44,6 +44,7 @@ class Ticket(db.Model):
     id_ticket= db.Column(db.Integer, primary_key = True)
     seat= db.Column(db.String(256))
     id_function = db.Column(db.Integer, db.ForeignKey('functions.id_function'))  
+    datefunctions = db.Column(db.String(256))
     user=db.Column(db.String(256))
     id_movie= db.Column(db.Integer)
     created_at = db.Column(db.DateTime(), default=datetime.now()) 
@@ -65,7 +66,6 @@ def login():
                 global user_
                 user_=request.form['username']
                 return redirect('home')
-                #return render_template('/inicio.html',us=us,em=em,movies=movies)
             else:
                 flash("Password incorrect")
                 return render_template('auth/login.html')  
@@ -159,24 +159,27 @@ def buy_tickets(movies):
     else:
         if 'user_session' in session:
             fun=request.form['function'].split(',')
-            print(fun)
+            #id_function
             mov=str(fun[0]).replace('(','').strip()
+            print(mov)
+            #id_movie
             mov1=str(fun[1]).replace(')','').strip()
+            print(mov1)
+            #datefuncion
             mov2=str(fun[2]).replace(')','')
             mov2=mov2.replace("'","").strip()
-            se=request.form['seat'].split(",")
-            prueba=""
-            aux2=Ticket.query.all()
-            aux=False
+            print(mov2)
+            #Seats add
+            se=str(request.form['seat']).upper()
+            se_=se
+            se=se.split(",")
+            #Function select
+            tictic=db.session.query(Function).filter(Function.id_function==mov).first()
+            ss=tictic.seat
+            ss=ss.split(",")
+            aux=False  
             for i in se:
-                for j in aux2:
-                    if j !=None:
-                        if str(mov1) == str(j.id_movie):
-                            if str(i) == str(j.seat):
-                                if str(mov2)==str(j.id_function):
-                                    prueba+=str(i)+" "
-            for i in se:
-                for j in val:
+                for j in ran:
                     if i == j:
                         aux=True
                         break
@@ -185,16 +188,39 @@ def buy_tickets(movies):
                 if aux==False:
                     flash("out of range")
                     break
+
             if aux!=False:
-                if prueba=="":
-                    for i in se: 
-                        f=db.session.query(Function).filter(Function.id_function==str(mov)).first()
-                        tic=Ticket(seat=str(i),id_function=f.datefuncion,user=session['user_session'],id_movie=movies)
-                        db.session.add(tic)
-                        db.session.commit()
-                    flash("Ok")
+                error=""
+                val=False
+                for i in se:
+                    val=False
+                    for j in ss:
+                        if i == j:
+                            val=True
+                    if val==False:
+                        error=error+i+" "
+                if error!="":
+                    flash("Seats "+error+" occupied")
                 else:
-                    flash("Seats "+prueba+" occupied")
+                    cont=0
+                    for i in se:
+                        cont=0;
+                        for j in ss: 
+                            if i==j:
+                                ss[cont]=""
+                            cont=cont+1
+                    new=""
+                    for i in ss:
+                        if i!="":
+                            new=new+i+","
+                    new=new[:-1]
+                    tictic.seat=new
+                    db.session.add(tictic)
+                    db.session.commit()
+                    created=Ticket(seat=se_,id_function=mov,datefunctions=mov2,user=session['user_session'],id_movie=movies)
+                    db.session.add(created)
+                    db.session.commit()
+                    flash("OK")
             return render_template('auth/buy_ticket.html',movie=movie,functions=functions,us=True)  
         else:
             flash("You must log in")
@@ -209,6 +235,18 @@ def tickets():
 
 @app.route('/delate/<id_ticket>',methods=['GET'])
 def delate(id_ticket):
+    #ticket_delate
+    new=db.session.query(Ticket).filter(Ticket.id_ticket==id_ticket).first()
+    #ticket delate seats
+    add=str(new.seat)
+    #id_function
+    fun=str(new.id_function)
+    refresh=db.session.query(Function).filter(Function.id_function==fun).first()
+    #seats_function
+    add_function=str(refresh.seat)+","+str(add)
+    refresh.seat=add_function
+    db.session.add(refresh)
+    db.session.commit()
     db.session.query(Ticket).filter(Ticket.id_ticket==id_ticket).delete()
     db.session.commit()
     return redirect(url_for('tickets'))
