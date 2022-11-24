@@ -29,6 +29,17 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", sans-serif}
     <a href="/home"  class="w3-bar-item w3-button w3-padding"></i>Home</a>
     <a href="/logout"  class="w3-bar-item w3-button w3-padding"></i>Sign out</a>
   </div>
+  
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <br />
+    {% for message in messages %}
+    <div class="alert alert-primary alert-dismissible" role="alert">
+        <strong>{{ message }}</strong>
+    </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
 </nav>
 {% endif %}
 
@@ -53,6 +64,8 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", sans-serif}
     <br>
   {% endfor %}    
 </div>
+
+
 
 <!-- End page content -->
 

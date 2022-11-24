@@ -119,7 +119,10 @@ def upload_upload():
 @app.route('/functions_movie', methods=['GET','POST'])
 def functions_movie():
     if request.method== 'POST':
-        movie=Function(seat=seats, datefuncion=request.form['DateFunction'],id_movie=request.form['id_movie'])
+        hora=request.form['HourFunction']
+        date2=request.form['DateFunction'] 
+        new_date=str(date2+" "+hora)
+        movie=Function(seat=seats, datefuncion=new_date,id_movie=request.form['id_movie'])
         val=request.form['id_movie']
         date=db.session.query(Function).filter(Function.datefuncion==movie.datefuncion).first()
         if date==None:
@@ -235,22 +238,36 @@ def tickets():
 
 @app.route('/delate/<id_ticket>',methods=['GET'])
 def delate(id_ticket):
+    tic=Ticket.query.all()
+    movie=Movie.query.all()
+    #2022-11-23 22:10
+    actual=str(datetime.now())[:-10]
+    actual=actual.split(' ')
+    actual_hora=str(actual[1]).replace(':','.')
+    actual_hora=float(actual_hora)
     #ticket_delate
     new=db.session.query(Ticket).filter(Ticket.id_ticket==id_ticket).first()
-    #ticket delate seats
-    add=str(new.seat)
-    #id_function
-    fun=str(new.id_function)
-    refresh=db.session.query(Function).filter(Function.id_function==fun).first()
-    #seats_function
-    add_function=str(refresh.seat)+","+str(add)
-    refresh.seat=add_function
-    db.session.add(refresh)
-    db.session.commit()
-    db.session.query(Ticket).filter(Ticket.id_ticket==id_ticket).delete()
-    db.session.commit()
+    fecha=str(new.datefunctions)
+    fecha=fecha.split(' ')
+    hora=str(fecha[1]).replace(':','.')
+    hora=float(hora)
+    if (str(fecha[0]) == str(actual[0])) and (actual_hora>=hora):
+        flash("Cannot be deleted")
+    else:    
+        #ticket delate seats
+        add=str(new.seat)
+        #id_function
+        fun=str(new.id_function)
+        refresh=db.session.query(Function).filter(Function.id_function==fun).first()
+        #seats_function
+        add_function=str(refresh.seat)+","+str(add)
+        refresh.seat=add_function
+        db.session.add(refresh)
+        db.session.commit()
+        db.session.query(Ticket).filter(Ticket.id_ticket==id_ticket).delete()
+        db.session.commit()
+        flash("Ok")
     return redirect(url_for('tickets'))
-
 
 if __name__ == '__main__':
     app.run(debug=True)
